@@ -71,6 +71,15 @@ namespace Demos
             var productView3 = Mapper.Map<ProductVM>(emptyProduct);
             ObjectDumper.Write(productView3);
 
+            Supplier Ikea = new Supplier()
+            {
+                CompanyName = "Ikea",
+                Products = new List<Product>() { product, Mapper.Map<Product>(productView3) }
+            };
+
+            var IkeaDisplay = Mapper.Map<SupplierVM>(Ikea);
+            ObjectDumper.Write(IkeaDisplay);
+            
             Console.WriteLine($"Press any key to continue");
             Console.ReadKey();
         }
@@ -88,6 +97,11 @@ namespace Demos
                 .ForMember<string>(x => x.SupplierName, opt => opt.MapFrom<string>(x => x.Supplier.CompanyName))
                 ;
 
+                config.CreateMap<Supplier, SupplierVM>()
+                .ForMember<string>(x => x.SupplierName, opt => opt.MapFrom<string>(x => x.CompanyName))
+                .ForMember<int>(x => x.ProductsCount, opt => opt.MapFrom<int>(x => x.Products.Count))
+                .ReverseMap()
+                ;
 
             });
         }
