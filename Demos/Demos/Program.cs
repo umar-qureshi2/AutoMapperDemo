@@ -59,6 +59,18 @@ namespace Demos
 
             var product = Mapper.Map<Product>(productView);
             ObjectDumper.Write(product);
+
+            var productView2 = Mapper.Map<ProductVM>(product);
+            ObjectDumper.Write(productView2);
+
+            Product emptyProduct = new Product()
+            {
+                ProductName = "No Supplier"
+            };
+
+            var productView3 = Mapper.Map<ProductVM>(emptyProduct);
+            ObjectDumper.Write(productView3);
+
             Console.WriteLine($"Press any key to continue");
             Console.ReadKey();
         }
@@ -72,7 +84,11 @@ namespace Demos
                 .ForMember<bool>(x => x.Discontinued, opt => opt.MapFrom<bool>(x => x.Enabled))
                 .ForMember<short?>(x => x.UnitsInStock, opt => opt.MapFrom<int>(x => x.Qty))
                 .ForMember<Supplier>(x => x.Supplier, opt => opt.MapFrom<Supplier>(x => new Supplier() { CompanyName = x.SupplierName }))
+                .ReverseMap()
+                .ForMember<string>(x => x.SupplierName, opt => opt.MapFrom<string>(x => x.Supplier.CompanyName))
                 ;
+
+
             });
         }
     }
